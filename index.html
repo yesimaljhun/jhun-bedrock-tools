@@ -331,6 +331,22 @@ background:transparent; color:var(--muted);
 #prompt-input:focus{border-color:var(--blue)}
 #prompt-acts{display:flex;justify-content:flex-end;gap:8px}
 
+
+/* ── FOLDER BROWSER MODAL ── */
+#fb-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:10000;backdrop-filter:blur(3px)}
+#fb-bg.off{display:none}
+#fb-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;width:380px;max-height:520px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#fb-box h3{font-family:var(--pixel);font-size:9.2px;color:var(--text);flex-shrink:0}
+#fb-list{flex:1;overflow-y:auto;border:1px solid var(--border);border-radius:4px;background:var(--bg);min-height:160px;max-height:300px}
+#fb-list::-webkit-scrollbar{width:5px}
+#fb-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.fb-item{padding:6px 10px;font-size:12.6px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .1s;border-left:2px solid transparent}
+.fb-item:hover{color:var(--text);background:rgba(255,255,255,.03)}
+.fb-item.selected{color:var(--green);background:rgba(63,185,80,.07);border-left-color:var(--green)}
+.fb-item .fb-icon{flex-shrink:0;font-size:13px}
+#fb-selected{font-size:11.5px;color:var(--muted);padding:6px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;min-height:30px;word-break:break-all;flex-shrink:0}
+#fb-acts{display:flex;justify-content:flex-end;gap:8px;flex-shrink:0}
+
 /* ── TOASTS ── */
 #toasts{position:fixed;bottom:14px;right:14px;display:flex;flex-direction:column;gap:7px;z-index:9999;pointer-events:none}
 .toast{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 14px;font-size:13.8px;color:var(--text);display:flex;align-items:center;gap:8px;box-shadow:0 4px 18px rgba(0,0,0,.45);animation:tin .2s ease;max-width:290px;pointer-events:all}
@@ -554,13 +570,13 @@ text-align:center;
 #tmpl-bg.off{display:none}
 #tmpl-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:680px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.6)}
 #tmpl-header{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0}
-#tmpl-header h3{font-family:var(--pixel);font-size:9.2px;color:var(--text);flex:1}
+#tmpl-header h3{font-family:var(--pixel);font-size:18.4px;color:var(--text);flex:1}
 #tmpl-search{padding:6px 10px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:12.6px;outline:none;width:200px}
 #tmpl-search:focus{border-color:var(--blue)}
 #tmpl-close-btn{background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);font-size:16.1px;padding:3px 8px;cursor:pointer;transition:all .15s}
 #tmpl-close-btn:hover{color:var(--text);border-color:var(--border2)}
 #tmpl-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;padding:0 6px}
-.tmpl-tab{padding:8px 14px;font-family:var(--pixel);font-size:6.9px;color:var(--dim);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tmpl-tab{padding:8px 14px;font-family:var(--pixel);font-size:13.8px;color:var(--dim);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
 .tmpl-tab.on{color:var(--green);border-bottom-color:var(--green)}
 .tmpl-tab:hover:not(.on){color:var(--muted)}
 #tmpl-grid-wrap{flex:1;overflow-y:auto;padding:14px}
@@ -1312,6 +1328,18 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:99999;
 </div>
 </div>
 
+<div id="fb-bg" class="off">
+<div id="fb-box">
+<h3>📁 Browse Folder</h3>
+<div id="fb-list"></div>
+<div id="fb-selected">No folder selected (will use pack root)</div>
+<div id="fb-acts">
+<button class="btn-s" id="fb-cancel">Cancel</button>
+<button class="btn-p" id="fb-ok">Select</button>
+</div>
+</div>
+</div>
+
 <div id="prompt-bg" class="off">
 <div id="prompt-box">
 <h3 id="prompt-title">Enter name</h3>
@@ -1744,8 +1772,8 @@ placeholder="e.g. Pack Editor">
 <button id="tmpl-close-btn">✕</button>
 </div>
 <div id="tmpl-tabs">
-<button class="tmpl-tab on" data-cat="blocks">🧱 Blocks</button>
-<button class="tmpl-tab" data-cat="items">🗡️ Items</button>
+<button class="tmpl-tab on" data-cat="blocks"><img src="icons/blocks.png" style="width:1em;height:1em;image-rendering:pixelated;vertical-align:middle"> Blocks</button>
+<button class="tmpl-tab" data-cat="items"><img src="icons/items.png" style="width:1em;height:1em;image-rendering:pixelated;vertical-align:middle"> Items</button>
 <button class="tmpl-tab" data-cat="all">📁 All</button>
 </div>
 <div id="tmpl-grid-wrap">
@@ -2195,7 +2223,7 @@ document.getElementById('btn-export-arrow').disabled = false;
 let xssDetected = false;
 zip.forEach((relPath, entry) => {
   if (entry.dir) return;
-  const norm = relPath.split("\\").join("/");
+  const norm = relPath.replace(/\\/g, "/");
   if (/<|>|javascript:|onerror|onload|onmouseover|onclick|script|alert\s*\(|eval\s*\(|document\.|window\./i.test(norm)) {
     xssDetected = true;
   }
@@ -3630,6 +3658,65 @@ function renderTreeDebounced() { clearTimeout(_rtTimer); _rtTimer = setTimeout(r
 document.getElementById('search').addEventListener('input', renderTreeDebounced);
 
 /* ── PROMPT HELPER ────────────────────────────────────────── */
+/* ── FOLDER BROWSER ───────────────────────────────────────── */
+function getFolderList() {
+  const folders = new Set(['(root)']);
+  S.files.forEach(f => {
+    const parts = f.path.split('/');
+    for (let i = 1; i < parts.length; i++) {
+      folders.add(parts.slice(0, i).join('/'));
+    }
+  });
+  return [...folders].sort();
+}
+
+function showFolderBrowser() {
+  return new Promise(resolve => {
+    const list = document.getElementById('fb-list');
+    const selLabel = document.getElementById('fb-selected');
+    const bg = document.getElementById('fb-bg');
+    let chosen = '';
+
+    // Build list
+    list.innerHTML = '';
+    getFolderList().forEach(folder => {
+      const item = document.createElement('div');
+      item.className = 'fb-item';
+      const depth = folder === '(root)' ? 0 : folder.split('/').length;
+      item.style.paddingLeft = (10 + depth * 12) + 'px';
+      const icon = document.createElement('span');
+      icon.className = 'fb-icon';
+      icon.textContent = '📁';
+      const lbl = document.createElement('span');
+      lbl.textContent = folder === '(root)' ? '/ (pack root)' : folder;
+      item.appendChild(icon);
+      item.appendChild(lbl);
+      item.addEventListener('click', () => {
+        list.querySelectorAll('.fb-item').forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+        chosen = folder === '(root)' ? '' : folder;
+        selLabel.textContent = chosen ? chosen : '/ (pack root)';
+      });
+      list.appendChild(item);
+    });
+
+    selLabel.textContent = 'No folder selected (will use pack root)';
+    chosen = '';
+    bg.classList.remove('off');
+
+    const close = val => {
+      bg.classList.add('off');
+      document.getElementById('fb-ok').onclick = null;
+      document.getElementById('fb-cancel').onclick = null;
+      resolve(val);
+    };
+
+    document.getElementById('fb-ok').onclick     = () => close(chosen);
+    document.getElementById('fb-cancel').onclick = () => close(null);
+    bg.onclick = e => { if (e.target === bg) close(null); };
+  });
+}
+
 function showPrompt(title, desc, placeholder, validate) {
 return new Promise(resolve => {
 document.getElementById('prompt-title').textContent  = title;
@@ -3667,20 +3754,131 @@ if (e.key === 'Escape') { e.preventDefault(); close(null); }
 });
 }
 
+/* ── FOLDER OR TYPE PICKER ───────────────────────────────── */
+// Shows a combined modal: folder tree on the left + manual text input.
+// Resolves with the chosen/typed path string, or null if cancelled.
+function showFolderOrTypePicker(title, desc) {
+  return new Promise(resolve => {
+    const bg = document.createElement('div');
+    bg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:10001;backdrop-filter:blur(3px)';
+
+    const box = document.createElement('div');
+    box.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:22px;width:420px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);max-height:90vh;overflow:hidden';
+
+    const h3 = document.createElement('h3');
+    h3.textContent = title;
+    h3.style.cssText = 'font-family:var(--pixel);font-size:9.2px;color:var(--text);flex-shrink:0';
+
+    const p = document.createElement('p');
+    p.textContent = desc;
+    p.style.cssText = 'font-size:12.6px;color:var(--muted);line-height:1.5;flex-shrink:0';
+
+    // Folder list
+    const listLabel = document.createElement('div');
+    listLabel.textContent = 'Browse folders:';
+    listLabel.style.cssText = 'font-size:11.5px;color:var(--muted);flex-shrink:0';
+
+    const list = document.createElement('div');
+    list.style.cssText = 'overflow-y:auto;border:1px solid var(--border);border-radius:4px;background:var(--bg);min-height:120px;max-height:200px;flex-shrink:0';
+    list.style.cssText += ';scrollbar-width:thin';
+
+    let chosen = '';
+    getFolderList().forEach(folder => {
+      const item = document.createElement('div');
+      const depth = folder === '(root)' ? 0 : folder.split('/').length;
+      item.style.cssText = `padding:5px 10px 5px ${10 + depth * 12}px;font-size:12.6px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;border-left:2px solid transparent;transition:all .1s`;
+      const icon = document.createElement('span');
+      icon.textContent = '📁';
+      icon.style.fontSize = '13px';
+      const lbl = document.createElement('span');
+      lbl.textContent = folder === '(root)' ? '/ (pack root)' : folder;
+      item.appendChild(icon);
+      item.appendChild(lbl);
+      item.addEventListener('click', () => {
+        list.querySelectorAll('[data-fb]').forEach(i => {
+          i.style.color = 'var(--muted)';
+          i.style.background = '';
+          i.style.borderLeftColor = 'transparent';
+        });
+        item.style.color = 'var(--green)';
+        item.style.background = 'rgba(63,185,80,.07)';
+        item.style.borderLeftColor = 'var(--green)';
+        chosen = folder === '(root)' ? '' : folder;
+        input.value = chosen;
+      });
+      item.dataset.fb = '1';
+      list.appendChild(item);
+    });
+
+    // Manual input
+    const inputLabel = document.createElement('div');
+    inputLabel.textContent = 'Or type a folder path:';
+    inputLabel.style.cssText = 'font-size:11.5px;color:var(--muted);flex-shrink:0';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'e.g. textures/blocks  (leave blank for root)';
+    input.spellcheck = false;
+    input.style.cssText = 'width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:13.8px;padding:8px 10px;outline:none;flex-shrink:0';
+    input.addEventListener('focus', () => input.style.borderColor = 'var(--blue)');
+    input.addEventListener('blur',  () => input.style.borderColor = 'var(--border)');
+
+    // Buttons
+    const acts = document.createElement('div');
+    acts.style.cssText = 'display:flex;justify-content:flex-end;gap:8px;flex-shrink:0';
+
+    const btnCancel = document.createElement('button');
+    btnCancel.className = 'btn-s';
+    btnCancel.textContent = 'Cancel';
+
+    const btnOk = document.createElement('button');
+    btnOk.className = 'btn-p';
+    btnOk.textContent = 'Select';
+
+    acts.appendChild(btnCancel);
+    acts.appendChild(btnOk);
+
+    box.appendChild(h3);
+    box.appendChild(p);
+    box.appendChild(listLabel);
+    box.appendChild(list);
+    box.appendChild(inputLabel);
+    box.appendChild(input);
+    box.appendChild(acts);
+    bg.appendChild(box);
+    document.body.appendChild(bg);
+
+    const close = val => {
+      document.body.removeChild(bg);
+      resolve(val);
+    };
+
+    btnOk.onclick = () => close(input.value.trim().replace(/^\/+|\/+$/g, ''));
+    btnCancel.onclick = () => close(null);
+    bg.addEventListener('click', e => { if (e.target === bg) close(null); });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter')  { e.preventDefault(); btnOk.click(); }
+      if (e.key === 'Escape') { e.preventDefault(); close(null); }
+    });
+
+    setTimeout(() => input.focus(), 50);
+  });
+}
+
 /* ── ADD FILES ────────────────────────────────────────────── */
 document.getElementById('add-files-input').addEventListener('change', async e => {
 const files = [...e.target.files];
 if (!files.length) return;
 e.target.value = '';
 
-// Ask where to place them (default: root of pack)
-const dest = await showPrompt(
-'Add Files',
-`Adding ${files.length} file(s). Enter the destination folder path inside the pack (leave blank for root):`,
-'e.g. textures/items',
-null
+// Ask where to place them — type or browse
+let dest;
+const browseChoice = await showFolderOrTypePicker(
+  'Add Files',
+  `Adding ${files.length} file(s). Choose a destination folder inside the pack:`
 );
-if (dest === null) return; // cancelled
+if (browseChoice === null) return; // cancelled
+dest = browseChoice;
 
 const prefix = dest.trim().replace(/^\/+|\/+$/g,''); // strip slashes
 
@@ -3775,18 +3973,30 @@ document.getElementById('tex-option-bg').classList.remove('off');
 
 document.getElementById('btn-new-texture').addEventListener('click', async () => {
 if (!S.zip) return;
-const rawName = await showPrompt(
-'Create New Texture',
-'Enter the name for the new texture (path + name, .png added automatically):',
-'e.g. textures/items/my_sword',
-val => {
-if (/[<>:"|?*\\]/.test(val.replace(/\//g,''))) return 'Name contains invalid characters.';
-return null;
-}
-);
-if (!rawName) return;
 
-const namePng = rawName.replace(/^\/+|\/+$/g,'').replace(/\.png$/i,'') + '.png';
+// Step 1: browse or type a folder
+const folderPath = await showFolderOrTypePicker(
+  'Create New Texture',
+  'Choose a folder to place the new texture in:'
+);
+if (folderPath === null) return;
+
+// Step 2: ask just for the file name
+const fileName = await showPrompt(
+  'Create New Texture',
+  'Enter the texture name (.png added automatically):',
+  'e.g. my_sword',
+  val => {
+    if (!val.trim()) return 'Name cannot be empty.';
+    if (/[<>:"|?*\\/]/.test(val)) return 'Name contains invalid characters.';
+    return null;
+  }
+);
+if (!fileName) return;
+
+const prefix = folderPath.trim().replace(/^\/+|\/+$/g, '');
+const rawName = prefix ? `${prefix}/${fileName.trim()}` : fileName.trim();
+const namePng = rawName.replace(/\.png$/i,'') + '.png';
 if (S.files.find(f => f.path === namePng)) {
 toast(`File already exists: ${namePng}`, 'e'); return;
 }
