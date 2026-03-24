@@ -1775,6 +1775,7 @@ placeholder="e.g. Pack Editor">
 <button class="tmpl-tab on" data-cat="blocks"><img src="icons/blocks.png" style="width:1em;height:1em;image-rendering:pixelated;vertical-align:middle"> Blocks</button>
 <button class="tmpl-tab" data-cat="items"><img src="icons/items.png" style="width:1em;height:1em;image-rendering:pixelated;vertical-align:middle"> Items</button>
 <button class="tmpl-tab" data-cat="all">📁 All</button>
+<button class="tmpl-tab" data-cat="sword-templates" style="margin-left:auto">Sword Templates</button>
 </div>
 <div id="tmpl-grid-wrap">
 <div id="tmpl-loading">⏳ Loading templates…</div>
@@ -4113,6 +4114,43 @@ return true;
 });
 
 grid.innerHTML = '';
+
+// Sword Templates – loaded from icons/ folder
+if (tmplCat === 'sword-templates') {
+  const swordTemplates = [
+    { name: 'Misty v2 (16x)',   dataUri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABJklEQVR4AbyRP0vDUBTFjwUHBxdBcPMLuLg4CQpOLlJ0FBG3gjhqlfg1BCejtR07dyp06Afov6Fz6Zqk7UunDm3OhVt4NI8GCg2cXLi5v3PPe8lhw2e7Bvt3T3OVBs+cgODtm4eLwouyUjMZCPzuIZwaRLERUF9rDQQueogmMUJj0Cn/wlT9nUwGhPPFT9kaJps7Jd+CaWIlIEDxA2s+OfMoASMTo136WYE5ZxmwcV54BuGb1w/ZHJgJWg6Y8ysGbFJhAgZmjG5KbH5XWQa8nOb3F5iCtff/lxpbYVbL4PrscH4/q4MwTU4eHuU4HHRpaUD48vQAjVYgW2nCBC5Q+zleGHV8tAe/NkR/MJV/zOOodDitSgJGrexeLeG0QVdPDLJEdRksAAAA//8OWWiFAAAABklEQVQDACWVimEhj292AAAAAElFTkSuQmCC' },
+    { name: 'Tightfault (16x)', dataUri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAACw4AAAsOAUC+4UEAAAF1SURBVDhPYxhwwAiliQK8pg7///36wfDv2zeGvz++Mvx6fJd4/bym9v+D77z973Tmzn/THSf+s0kp/odKEQa8Jrb//W68/C/oEvxfoXb6fzZJOeI1c+uZ//c4d+8/v4Pff9mSnv9s4jLYNbOKSv1nk1VCkeTUMPhvsfnof15zl/9SabX/QWqgUpiAmV/kv1LrvP9s0hC/sStr/debtfY/j77Vf/GIrP8sQmKEnc3ML/RfqWUu0BCF/8r1U/9zaRr9F/aJ+c8sIExYMwgwcfL8FwvP/M8GdCqHktZ/QSf//8y8AsRphgGQIaKh6f/ZRCSBUaVAmub5Obr/Y+xk/jNxcv8XC0n/r1AzFRhl8sQZAtLsbyr+X0mSF6wBZAgLMEwUKif+Z5PAHe+MrOZe/xm+f2FwZLzJcPPFV4aHL7+gJE8WPqH/jCysDL/fvcSebFk0zP8r1s/6zySKI4EQAIxMYkA//vrG8P/3L4b/Xz+SlLkYGBgYAMD0jPqNgZFDAAAAAElFTkSuQmCC' },
+  ];
+  swordTemplates.forEach(t => {
+    const cell = document.createElement('div');
+    cell.className = 'tmpl-cell' + (t.name === tmplSelectedPath ? ' selected' : '');
+    cell.dataset.path = t.name;
+    cell.dataset.sword = '1';
+
+    const img = document.createElement('img');
+    img.className = 'tmpl-thumb';
+    img.src = t.dataUri;
+    img.alt = t.name;
+    img.style.imageRendering = 'pixelated';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'tmpl-name';
+    lbl.textContent = t.name;
+
+    cell.appendChild(img);
+    cell.appendChild(lbl);
+    cell.dataset.datauri = t.dataUri;
+    cell.addEventListener('click', () => {
+      tmplSelectedPath = t.name;
+      document.querySelectorAll('.tmpl-cell').forEach(c => c.classList.toggle('selected', c.dataset.path === t.name));
+      document.getElementById('tmpl-selected-name').textContent = t.name;
+      document.getElementById('tmpl-confirm').disabled = false;
+    });
+    grid.appendChild(cell);
+  });
+  return;
+}
+
 for (const item of items) {
 const cell = document.createElement('div');
 cell.className = 'tmpl-cell' + (item.path === tmplSelectedPath ? ' selected' : '');
@@ -4158,6 +4196,28 @@ document.getElementById('tmpl-bg').classList.add('off');
 
 const namePng  = pendingTexturePath;
 const fileName = namePng.split('/').pop();
+
+// Sword templates are embedded as base64 data URIs
+const selectedCell = document.querySelector(`.tmpl-cell[data-path="${CSS.escape(tmplSelectedPath)}"]`);
+if (selectedCell && selectedCell.dataset.sword === '1') {
+  try {
+    const dataUri = selectedCell.dataset.datauri;
+    const base64 = dataUri.split(',')[1];
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    const fileObj = { name: fileName, path: namePng, data: bytes, modified: true, type: 'image' };
+    S.files.push(fileObj);
+    S.zip.file(namePng, bytes);
+    S.files.sort((a,b) => a.path.localeCompare(b.path));
+    renderTree();
+    toast(`Created ${namePng} from template`, 's');
+    await openFile(fileObj);
+  } catch(e) {
+    toast('Could not load sword template', 'e');
+  }
+  return;
+}
 
 const entry = templateZip.file(tmplSelectedPath);
 if (!entry) { toast('Template not found', 'e'); return; }
