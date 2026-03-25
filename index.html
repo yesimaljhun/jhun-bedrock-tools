@@ -331,7 +331,6 @@ background:transparent; color:var(--muted);
 #prompt-input:focus{border-color:var(--blue)}
 #prompt-acts{display:flex;justify-content:flex-end;gap:8px}
 
-
 /* ── FOLDER BROWSER MODAL ── */
 #fb-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:10000;backdrop-filter:blur(3px)}
 #fb-bg.off{display:none}
@@ -568,7 +567,7 @@ text-align:center;
 /* Template browser */
 #tmpl-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:10001;backdrop-filter:blur(4px)}
 #tmpl-bg.off{display:none}
-#tmpl-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:680px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+#tmpl-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:780px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.6)}
 #tmpl-header{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0}
 #tmpl-header h3{font-family:var(--pixel);font-size:18.4px;color:var(--text);flex:1}
 #tmpl-search{padding:6px 10px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:12.6px;outline:none;width:200px}
@@ -596,6 +595,13 @@ cursor:pointer;transition:all .12s;background:var(--surface2);
 #tmpl-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
 #tmpl-selected-name{flex:1;font-size:12.6px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #tmpl-loading{padding:40px;text-align:center;color:var(--dim);font-size:13.8px;display:flex;flex-direction:column;align-items:center;gap:10px}
+#tmpl-body{display:flex;flex:1;min-height:0;overflow:hidden}
+#tmpl-pvw-pane{width:168px;flex-shrink:0;border-left:1px solid var(--border);display:flex;flex-direction:column;padding:12px 10px;gap:8px;background:var(--bg)}
+.tmpl-pvw-label{font-family:var(--pixel);font-size:6px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;flex-shrink:0}
+#tmpl-pvw-wrap{flex:1;overflow:hidden;background:repeating-conic-gradient(#181b20 0% 25%,#121518 0% 50%) 0 0/10px 10px;border:1px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;position:relative;min-height:60px}
+#tmpl-pvw-empty{font-family:var(--pixel);font-size:7px;color:var(--dim);text-align:center;padding:8px;line-height:1.8;letter-spacing:.5px}
+#tmpl-pvw-img{image-rendering:pixelated;image-rendering:crisp-edges;display:block;transform-origin:center center;flex-shrink:0}
+#tmpl-pvw-zoom{font-family:var(--mono);font-size:9px;color:var(--dim);text-align:center;flex-shrink:0;opacity:.7;letter-spacing:.5px}
 
 /* ── EXPORT DROPDOWN ── */
 #export-wrap{position:relative;display:flex;gap:0}
@@ -617,16 +623,16 @@ color:var(--muted);cursor:pointer;transition:all .12s;white-space:nowrap;
 /* ── ADJUSTMENTS PANEL ── */
 #adj-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;z-index:8000;backdrop-filter:blur(4px)}
 #adj-overlay.off{display:none}
-#adj-panel{width:710px;max-width:96vw;height:550px;max-height:93vh;background:var(--surface);border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;box-shadow:0 28px 90px rgba(0,0,0,.65);overflow:hidden}
+#adj-panel{width:940px;max-width:96vw;height:570px;max-height:93vh;background:var(--surface);border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;box-shadow:0 28px 90px rgba(0,0,0,.65);overflow:hidden}
 #adj-hdr{height:44px;flex-shrink:0;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px}
 #adj-hdr-title{font-family:var(--pixel);font-size:9.2px;color:var(--text);flex:1}
 #adj-x{background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);font-size:16.1px;padding:2px 8px;cursor:pointer;transition:all .12s;font-family:var(--mono)}
 #adj-x:hover{color:var(--red);border-color:var(--red)}
 #adj-body{flex:1;display:flex;overflow:hidden;min-height:0}
-#adj-list{width:160px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:5px 0}
+#adj-list{width:178px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:5px 0}
 #adj-list::-webkit-scrollbar{width:4px}
 #adj-list::-webkit-scrollbar-thumb{background:var(--border)}
-.adj-li{padding:8px 14px;font-size:11.5px;color:var(--muted);cursor:pointer;transition:all .1s;display:flex;align-items:center;gap:7px;border-left:2px solid transparent;white-space:nowrap}
+.adj-li{padding:8px 14px;font-size:11.5px;color:var(--muted);cursor:pointer;transition:all .1s;display:flex;align-items:center;gap:7px;border-left:2px solid transparent;overflow:hidden}
 .adj-li:hover{color:var(--text);background:rgba(255,255,255,.03)}
 .adj-li.on{color:var(--green);border-left-color:var(--green);background:rgba(63,185,80,.07);font-weight:600}
 .adj-li-icon{width:18px;text-align:center;font-size:14.9px;flex-shrink:0}
@@ -654,6 +660,13 @@ color:var(--muted);cursor:pointer;transition:all .12s;white-space:nowrap;
 .bwp-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
 .bwp{padding:3px 9px;font-size:10.3px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--dim);cursor:pointer;transition:all .1s;font-family:var(--mono)}
 .bwp:hover{border-color:var(--green);color:var(--green)}
+
+/* ── Adjustments live preview pane ── */
+#adj-pvw-pane{width:185px;flex-shrink:0;border-left:1px solid var(--border);display:flex;flex-direction:column;padding:14px 12px;gap:7px;background:var(--bg);overflow:hidden}
+.adj-pvw-label{font-family:var(--pixel);font-size:6px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;flex-shrink:0}
+.adj-pvw-wrap{flex:1;display:flex;align-items:center;justify-content:center;background:repeating-conic-gradient(#181b20 0% 25%,#121518 0% 50%) 0 0/10px 10px;border:1px solid var(--border);border-radius:5px;overflow:hidden;min-height:0}
+.adj-pvw-wrap canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+.adj-pvw-live{font-size:10px;color:var(--green);opacity:0.65;text-align:center;flex-shrink:0}
 
 /* ── EASY COLOR SWAP MODAL ── */
 #colorswap-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:9000;backdrop-filter:blur(4px)}
@@ -1011,6 +1024,252 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:99999;
   #skin-2d-panel{width:100%;height:50vh;border-left:none;border-top:2px solid var(--border)}
   #skin-3d-panel{height:50vh;flex:none}
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   MINIMALIST + ANIMATION OVERRIDES
+   ─────────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg:        #0a0c0f;
+  --surface:   #111318;
+  --surface2:  #171b22;
+  --border:    #1e232b;
+  --border2:   #28303c;
+  --text:      #dde5ee;
+  --muted:     #6b7585;
+  --dim:       #3d4351;
+  --green:     #2ea04a;
+  --green-dim: #1b5e2e;
+  --blue:      #4d94e8;
+  --gold:      #c28a1a;
+  --red:       #e5483f;
+  --purple:    #a87de8;
+  --mono: 'Geist Mono', 'JetBrains Mono', monospace;
+}
+
+/* Remove scanlines */
+body::after { display: none !important; }
+
+/* Header */
+#header {
+  height: 44px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  padding: 0 16px;
+}
+#logo {
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  text-shadow: none;
+  opacity: 0.82;
+  transition: opacity 220ms;
+  cursor: default;
+}
+#logo:hover { opacity: 1; }
+
+/* Sidebar / panels */
+#sidebar { border-right: 1px solid var(--border); background: var(--bg); }
+#sidebar-top { border-bottom: 1px solid var(--border); }
+#file-tree { background: var(--bg); }
+#rpanel { border-left: 1px solid var(--border); background: var(--bg); }
+.sec { border-bottom: 1px solid var(--border); }
+
+/* Toolbars */
+#toolbar-img, #toolbar-txt {
+  height: 40px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+/* Pack tabs */
+.pack-tab {
+  border-radius: 3px;
+  background: transparent;
+  border-color: transparent;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+.pack-tab:hover  { background: var(--surface); border-color: var(--border); }
+.pack-tab.active { background: var(--surface); border-color: var(--border2); color: var(--text); }
+
+/* Global button base */
+button {
+  position: relative;
+  overflow: hidden;
+  transition: transform 120ms ease, box-shadow 120ms ease,
+              background 120ms ease, color 120ms ease, border-color 120ms ease;
+  will-change: transform;
+}
+button:hover:not(:disabled)  { transform: translateY(-1px); }
+button:active:not(:disabled) { transform: translateY(0.5px) scale(0.98); transition-duration: 60ms; }
+
+/* Ripple layer */
+button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--rx,50%) var(--ry,50%), rgba(255,255,255,0.10) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 500ms, transform 500ms;
+  pointer-events: none;
+  border-radius: inherit;
+}
+button.rippling::before { opacity: 1; transform: scale(2.5); transition: none; }
+
+/* Primary */
+.btn-p {
+  background: var(--green-dim);
+  border: 1px solid rgba(46,160,74,0.45);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  letter-spacing: 0.02em;
+}
+.btn-p:hover:not(:disabled) {
+  background: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 4px 14px rgba(46,160,74,0.25), 0 1px 3px rgba(0,0,0,0.4);
+}
+.btn-p:active:not(:disabled) { box-shadow: 0 1px 4px rgba(46,160,74,0.2); }
+
+/* Secondary */
+.btn-s { border: 1px solid var(--border); background: transparent; box-shadow: none; }
+.btn-s:hover:not(:disabled) {
+  border-color: var(--border2);
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Icon buttons */
+.ibtn {
+  transition: transform 120ms ease, color 120ms, border-color 120ms, background 120ms;
+}
+.ibtn:hover:not(:disabled)  { transform: translateY(-1px) scale(1.06); }
+.ibtn:active:not(:disabled) { transform: scale(0.94); transition-duration: 60ms; }
+.ibtn.on { box-shadow: 0 0 12px rgba(46,160,74,0.2); }
+
+/* Toolbar / skin / audio buttons */
+.tbtn, .skin-tool-btn, .aud-tbtn {
+  transition: transform 120ms ease, color 120ms, background 120ms, border-color 120ms, box-shadow 120ms;
+}
+.tbtn:hover, .skin-tool-btn:hover, .aud-tbtn:hover { transform: translateY(-1px) scale(1.07); }
+.tbtn:active, .skin-tool-btn:active, .aud-tbtn:active { transform: scale(0.92); transition-duration: 60ms; }
+.skin-tool-btn.on { box-shadow: 0 0 10px rgba(46,160,74,0.2); }
+
+/* Audio play pulse */
+#aud-play:hover:not(:disabled) {
+  box-shadow: 0 0 0 4px rgba(46,160,74,0.15), 0 4px 16px rgba(46,160,74,0.3);
+}
+#aud-play.is-playing { animation: play-pulse 2s ease-in-out infinite; }
+@keyframes play-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(46,160,74,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(46,160,74,0); }
+}
+
+/* File rows */
+.file-row {
+  transition: background 120ms ease, color 120ms ease, border-left-color 220ms ease;
+}
+
+/* Misc items */
+.misc-item {
+  transition: background 220ms ease, border-color 220ms ease, transform 220ms ease;
+}
+.misc-item:hover {
+  transform: translateX(4px);
+  border-color: rgba(46,160,74,0.4);
+  background: rgba(46,160,74,0.05);
+}
+
+/* Welcome overlay entrance */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#ov-load  { animation: fade-up 380ms ease both; }
+.drop-box { animation: fade-up 380ms ease 60ms both; }
+.ov-title { animation: fade-up 380ms ease 100ms 1 both; }
+.ov-sub   { animation: fade-up 380ms ease 140ms both; }
+
+/* Drop box */
+.drop-box {
+  border-style: dashed;
+  border-color: var(--border);
+  background: transparent;
+  transition: border-color 220ms, box-shadow 220ms, background 220ms;
+}
+.drop-box:hover, .drop-box.over {
+  border-color: var(--green);
+  background: rgba(46,160,74,0.04);
+  box-shadow: 0 0 40px rgba(46,160,74,0.07);
+}
+
+/* Canvas checker */
+#canvas-area {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(45deg, rgba(30,35,43,0.55) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(30,35,43,0.55) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(30,35,43,0.55) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(30,35,43,0.55) 75%);
+  background-size: 14px 14px;
+  background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+}
+
+/* Search focus */
+#search { transition: border-color 120ms, box-shadow 120ms; }
+#search:focus {
+  border-color: rgba(77,148,232,0.5);
+  box-shadow: 0 0 0 3px rgba(77,148,232,0.07);
+}
+
+/* Palette cells */
+.pcell { transition: transform 120ms cubic-bezier(0.34,1.56,0.64,1), border-color 120ms; }
+.pcell:hover { transform: scale(1.3); }
+
+/* Size selector */
+.sbc-size-btn { transition: background 120ms, border-color 120ms, color 120ms, transform 120ms ease; }
+.sbc-size-btn:hover  { transform: translateY(-1px); }
+.sbc-size-btn:active { transform: scale(0.96); transition-duration: 60ms; }
+
+/* Pills */
+.semi-step, .oct-pill, .bwp {
+  transition: background 120ms, border-color 120ms, color 120ms, transform 120ms ease;
+}
+.semi-step:hover, .oct-pill:hover, .bwp:hover { transform: translateY(-1px); }
+.semi-step:active, .oct-pill:active, .bwp:active { transform: scale(0.95); transition-duration: 60ms; }
+
+/* Layer action buttons */
+.layer-act-btn { transition: color 120ms, background 120ms, transform 120ms cubic-bezier(0.34,1.56,0.64,1); }
+.layer-act-btn:hover  { transform: scale(1.18); }
+.layer-act-btn:active { transform: scale(0.9); transition-duration: 60ms; }
+
+/* Add-tab button */
+#btn-add-tab {
+  transition: color 120ms ease, border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+}
+
+/* Waveform */
+#waveform-wrap { transition: border-color 120ms, box-shadow 220ms; }
+#waveform-wrap:hover { box-shadow: 0 0 20px rgba(46,160,74,0.1); }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* Export items */
+.exp-item { transition: background 120ms, color 120ms, padding-left 120ms ease; }
+.exp-item:hover { padding-left: 18px; }
+
+/* Modal blur */
+#adj-bg, #modal-bg, #prompt-bg, #colorswap-bg, #tex-option-bg, #sbc-info-modal-bg {
+  backdrop-filter: blur(3px);
+}
+
+
+
 </style>
 </head>
 <body>
@@ -1078,9 +1337,9 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:99999;
 <button class="ibtn" id="btn-colorswap" title="Easy Color Swap" style="padding:5px 14px">🔄 Color Swap</button>
 </div>
 <div class="tgrp">
-<button class="btn-s" id="btn-replace" style="font-size:11.5px;padding:4px 9px">🖼 Replace PNG</button>
 <button class="btn-p" id="btn-apply"   style="font-size:11.5px;padding:4px 9px">✓ Apply</button>
 </div>
+<button id="btn-replace"  style="display:none" aria-hidden="true"></button>
 <input type="color" id="c-native" value="#3fb950" title="Color picker">
 </div>
 
@@ -1278,10 +1537,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:99999;
 
 <div class="sec img-only hidden" id="sec-layers">
 <div class="sec-lbl" style="padding:10px 12px 0">Layers</div>
-<div class="layers-toolbar">
-<button class="btn-s" id="btn-layer-add">＋ New Layer</button>
-<button class="btn-s" id="btn-layer-flatten" title="Flatten all layers into one">⬇ Flatten</button>
-</div>
 <div id="layer-list"></div>
 <div class="layer-props" id="layer-props">
 <div class="layer-prop-row">
@@ -1308,17 +1563,16 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:99999;
 </div>
 </div>
 <div class="layer-bottom-row">
+<button class="btn-s" id="btn-layer-add">＋ New Layer</button>
+<button class="btn-s" id="btn-layer-flatten" title="Flatten all layers into one">⬇ Flatten</button>
+</div>
+<div class="layer-bottom-row">
 <button class="btn-s" id="btn-layer-dup" title="Duplicate active layer">⧉ Duplicate</button>
 <button class="btn-s" id="btn-layer-merge" title="Merge active layer down">↓ Merge Down</button>
 </div>
 </div>
 
-<div class="sec img-only hidden" id="sec-replace">
-<div class="sec-lbl">Quick Replace</div>
-<div style="font-size:11.5px;color:var(--muted);line-height:1.6;margin-bottom:8px">Replace texture with an uploaded PNG</div>
-<button class="btn-s" id="btn-replace2" style="width:100%;font-size:11.5px;padding:4px">📁 Upload PNG</button>
-</div>
-
+<button id="btn-replace2" style="display:none" aria-hidden="true"></button>
 <div class="sec" id="sec-actions">
 <div class="sec-lbl">File Actions</div>
 <button class="btn-s" id="btn-download-file" style="width:100%;font-size:11.5px;padding:5px;margin-bottom:6px">⬇ Download File</button>
@@ -1777,9 +2031,19 @@ placeholder="e.g. Pack Editor">
 <button class="tmpl-tab" data-cat="all">📁 All</button>
 <button class="tmpl-tab" data-cat="sword-templates" style="margin-left:auto">Sword Templates</button>
 </div>
+<div id="tmpl-body">
 <div id="tmpl-grid-wrap">
 <div id="tmpl-loading">⏳ Loading templates…</div>
 <div id="tmpl-grid" style="display:none"></div>
+</div>
+<div id="tmpl-pvw-pane">
+<div class="tmpl-pvw-label">Preview</div>
+<div id="tmpl-pvw-wrap">
+<span id="tmpl-pvw-empty">Select a<br>template</span>
+<canvas id="tmpl-pvw-img" style="display:none"></canvas>
+</div>
+<div id="tmpl-pvw-zoom"></div>
+</div>
 </div>
 <div id="tmpl-footer">
 <span id="tmpl-selected-name">No template selected</span>
@@ -1813,6 +2077,7 @@ placeholder="e.g. Pack Editor">
 <button id="adj-x">✕</button>
 </div>
 <div id="adj-body">
+
 
 <div id="adj-list">
 <div class="adj-li on"  data-adj="brightness"><span class="adj-li-icon">☀️</span>Brightness/Contrast</div>
@@ -1963,6 +2228,11 @@ placeholder="e.g. Pack Editor">
 </div>
 
 </div>
+<div id="adj-pvw-pane">
+  <div class="adj-pvw-label">Live Preview</div>
+  <div class="adj-pvw-wrap"><canvas id="adj-pvw-after"></canvas></div>
+  <div class="adj-pvw-live">● Live</div>
+</div>
 </div>
 <div class="adj-ftr">
 <button class="btn-s" id="adj-reset-btn" style="margin-right:auto">↺ Reset</button>
@@ -2029,5 +2299,7 @@ Tolerance
 </div>
 
 <script src="script.js"></script>
+<script src="preview.js"></script>
+
 </body>
 </html>
