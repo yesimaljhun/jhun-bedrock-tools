@@ -4799,3 +4799,26 @@ document.getElementById('skin-bg-btn').addEventListener('click', function() {
 
 /* ── INIT ─────────────────────────────────────────────────── */
 setColor(63,185,80,255);
+
+try {
+/* ── Ripple effect on all buttons ── */
+document.addEventListener('mousedown', function(e) {
+  const btn = e.target.closest('button');
+  if (!btn || btn.disabled) return;
+  const rect = btn.getBoundingClientRect();
+  const rx = ((e.clientX - rect.left) / rect.width * 100).toFixed(1) + '%';
+  const ry = ((e.clientY - rect.top)  / rect.height * 100).toFixed(1) + '%';
+  btn.style.setProperty('--rx', rx);
+  btn.style.setProperty('--ry', ry);
+  btn.classList.remove('rippling');
+  void btn.offsetWidth; /* reflow */
+  btn.classList.add('rippling');
+  const done = () => btn.classList.remove('rippling');
+  btn.addEventListener('animationend', done, { once: true });
+  setTimeout(done, 600);
+});
+} catch (_e) { console.error(_e); }
+
+/* expose ADJ_ORIG for the inline preview script */
+function getAdjOrig() { return ADJ_ORIG; }
+
