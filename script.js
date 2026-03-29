@@ -34,6 +34,10 @@ activeLayerIdx: 0,   // index into S.layers
 let PACKS = [];        // array of saved pack snapshots
 let activePackIdx = -1;
 
+/* ── File clipboard + multi-select (global — survive pack tab switches) ── */
+let CLIP      = null;       // null | Array<{name:string, data:Uint8Array}>
+let SELECTION = new Set();  // set of file paths currently multi-selected
+
 /* ── Audio state (declared here so setMode can reference it) ─ */
 const AUD = {
 ctx: null, buffer: null, source: null, gainNode: null,
@@ -114,10 +118,11 @@ document.getElementById('toasts').appendChild(d);
 setTimeout(()=>d.remove(), ms);
 }
 
-function showConfirm(title, body) {
+function showConfirm(title, body, confirmLabel = 'Confirm') {
 return new Promise(r => {
 document.getElementById('modal-title').textContent = title;
 document.getElementById('modal-body').textContent  = body;
+document.getElementById('modal-yes').textContent   = confirmLabel;
 document.getElementById('modal-bg').classList.remove('off');
 const close = () => document.getElementById('modal-bg').classList.add('off');
 document.getElementById('modal-yes').onclick = ()=>{close();r(true);};
@@ -290,6 +295,7 @@ async function switchToPack(idx) {
 
   // Clear search so the previous pack's query doesn't bleed into the new tree
   document.getElementById('search').value = '';
+  SELECTION.clear();
 
   const hasFiles = S.files.length > 0;
   document.getElementById('btn-export').disabled       = !hasFiles;
@@ -473,7 +479,7 @@ renderNode(childEl, childNode, fullPath, expanded, openFolders);
 // Then files
 node.__files.forEach(f => {
 const row = document.createElement('div');
-row.className = 'file-row' + (f.modified?' dirty':'') + (S.current===f?' active':'');
+row.className = 'file-row' + (f.modified?' dirty':'') + (S.current===f?' active':'') + (SELECTION.has(f.path)?' selected':'');
 row.dataset.path = f.path;
 
 const kind = kindOf(f.path);
@@ -489,6 +495,17 @@ e.stopPropagation();
 await deleteFile(f);
 });
 row.appendChild(delBtn);
+
+const moreBtn = document.createElement('button');
+moreBtn.className = 'more-btn';
+moreBtn.title = 'Copy / Paste';
+moreBtn.textContent = '···';
+moreBtn.addEventListener('click', e => {
+e.stopPropagation();
+const r = moreBtn.getBoundingClientRect();
+openFileMenu(f, r.right + 4, r.top);
+});
+row.appendChild(moreBtn);
 
 if (kind === 'image') {
 const thumb = document.createElement('img');
@@ -526,7 +543,17 @@ quickPlaySound(f, playBtn);
 row.appendChild(playBtn);
 }
 
-row.addEventListener('click', () => openFile(f));
+row.addEventListener('click', e => {
+if (e.ctrlKey || e.metaKey) {
+  e.preventDefault();
+  if (SELECTION.has(f.path)) { SELECTION.delete(f.path); } else { SELECTION.add(f.path); }
+  updateSelectionHighlight();
+} else {
+  SELECTION.clear();
+  updateSelectionHighlight();
+  openFile(f);
+}
+});
 container.appendChild(row);
 });
 }
@@ -572,6 +599,123 @@ setMode('hint');
 toast(`Deleted ${f.name}`, 'i');
 renderTree();
 }
+
+/* ── FILE COPY/PASTE MENU ────────────────────────────────── */
+function updateSelectionHighlight() {
+  document.querySelectorAll('.file-row').forEach(el => {
+    el.classList.toggle('selected', SELECTION.has(el.dataset.path));
+  });
+}
+
+function hideFileMenu() {
+  const m = document.getElementById('file-menu');
+  m.classList.remove('visible');
+  m._targetFile = null;
+}
+
+// anchorX/anchorY: cursor position (right-click) or button-derived position (... button)
+function openFileMenu(fileObj, anchorX, anchorY) {
+  // If file is not in selection, collapse to single-file mode
+  if (!SELECTION.has(fileObj.path)) {
+    SELECTION.clear();
+    updateSelectionHighlight();
+  }
+  const m = document.getElementById('file-menu');
+  m._targetFile = fileObj;
+  const selCount = SELECTION.size;
+  document.getElementById('fmenu-copy').textContent = selCount > 1 ? `📋 Copy ${selCount} files` : '📋 Copy';
+  document.getElementById('fmenu-paste').classList.toggle('fmenu-disabled', CLIP === null);
+  const menuW = 148, menuH = 66;
+  let x = anchorX, y = anchorY;
+  if (x + menuW > window.innerWidth)  x = window.innerWidth  - menuW - 4;
+  if (y + menuH > window.innerHeight) y = window.innerHeight - menuH - 4;
+  m.style.left = x + 'px';
+  m.style.top  = y + 'px';
+  m.classList.add('visible');
+}
+
+document.getElementById('fmenu-copy').addEventListener('click', () => {
+  const f = document.getElementById('file-menu')._targetFile;
+  if (!f) return;
+  hideFileMenu();
+  const targets = SELECTION.size > 0 ? S.files.filter(x => SELECTION.has(x.path)) : [f];
+  CLIP = targets.map(x => ({ name: x.name, data: x.data.slice() }));
+  toast(CLIP.length > 1 ? `Copied ${CLIP.length} files` : `Copied ${CLIP[0].name}`, 'i');
+});
+
+document.getElementById('fmenu-paste').addEventListener('click', async () => {
+  const f = document.getElementById('file-menu')._targetFile;
+  hideFileMenu();
+  if (!CLIP || !f || !S.zip) return;
+
+  const parts  = f.path.split('/');
+  const folder = parts.length > 1 ? parts.slice(0, -1).join('/') : '';
+
+  // Build candidate paths using original names
+  const candidates = CLIP.map(item => ({
+    item,
+    candName: item.name,
+    candPath: folder ? `${folder}/${item.name}` : item.name,
+  }));
+
+  // Detect conflicts
+  const conflicts = candidates.filter(c => S.files.some(x => x.path === c.candPath));
+  if (conflicts.length > 0) {
+    const names  = conflicts.map(c => c.candName);
+    const listed = names.length <= 3
+      ? names.join(', ')
+      : names.slice(0, 3).join(', ') + ` and ${names.length - 3} more`;
+    const ok = await showConfirm(
+      'Replace Files?',
+      `${listed} already exist in this folder. Replace them?`,
+      'Replace'
+    );
+    if (!ok) return;
+  }
+
+  // Paste — replace existing files in-place, push new ones
+  for (const { item, candName, candPath } of candidates) {
+    const existing = S.files.find(x => x.path === candPath);
+    if (existing) {
+      existing.data     = item.data.slice();
+      existing.modified = true;
+      S.zip.file(candPath, existing.data);
+    } else {
+      const newFile = { name: candName, path: candPath, data: item.data.slice(), modified: true, type: kindOf(candPath) };
+      S.files.push(newFile);
+      S.zip.file(candPath, newFile.data);
+    }
+  }
+
+  S.files.sort((a, b) => a.path.localeCompare(b.path));
+  renderTree();
+  const n = candidates.length;
+  toast(n > 1 ? `Pasted ${n} files` : `Pasted ${candidates[0].candName}`, 's');
+});
+
+// Right-click / Shift+Right-click on file tree rows
+document.getElementById('file-tree').addEventListener('contextmenu', e => {
+  e.preventDefault();
+  const row = e.target.closest('.file-row');
+  if (!row) return;
+  const fileObj = S.files.find(f => f.path === row.dataset.path);
+  if (!fileObj) return;
+  if (e.shiftKey) {
+    // Shift+Right-click: toggle file in/out of selection without opening menu
+    if (SELECTION.has(fileObj.path)) { SELECTION.delete(fileObj.path); } else { SELECTION.add(fileObj.path); }
+    updateSelectionHighlight();
+  } else {
+    // Regular right-click: open the menu at cursor
+    openFileMenu(fileObj, e.clientX, e.clientY);
+  }
+});
+
+document.addEventListener('mousedown', e => {
+  const m = document.getElementById('file-menu');
+  if (m.classList.contains('visible') && !m.contains(e.target)) hideFileMenu();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hideFileMenu(); });
+document.getElementById('file-tree').addEventListener('scroll', () => hideFileMenu(), { passive: true });
 
 /* ── Image editing ────────────────────────────────────────── */
 async function openImage(f) {
