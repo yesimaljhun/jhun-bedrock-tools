@@ -79,7 +79,7 @@ button{font-family:var(--mono);font-size:12.6px;font-weight:600;border:none;bord
 .file-row.dirty::after{content:'●';position:absolute;right:6px;color:var(--gold);font-size:8px}
 .file-icon{font-size:14.9px;flex-shrink:0;width:16px;text-align:center}
 .file-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.tex-thumb{width:20px;height:20px;flex-shrink:0;image-rendering:pixelated;border-radius:2px;background:repeating-conic-gradient(#2a2a2a 0% 25%,#1a1a1a 0% 50%) 0 0/8px 8px}
+.tex-thumb{width:20px;height:20px;flex-shrink:0;image-rendering:pixelated;border-radius:2px;background:repeating-conic-gradient(#2a2a2a 0% 25%,#1a1a1a 0% 50%) 0 0/8px 8px;pointer-events:none}
 
 /* play button on audio rows */
 .play-snd-btn{
@@ -1269,6 +1269,38 @@ button.rippling::before { opacity: 1; transform: scale(2.5); transition: none; }
 }
 
 
+/* ── FILE COPY/PASTE ── */
+.more-btn{
+  flex-shrink:0;width:18px;height:18px;border-radius:3px;
+  background:transparent;border:1px solid transparent;
+  color:transparent;font-size:11px;cursor:pointer;letter-spacing:-1px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .12s;line-height:1;padding:0;margin-left:1px;
+}
+.file-row:hover .more-btn,.file-row.selected .more-btn{color:var(--dim);border-color:var(--border);}
+.more-btn:hover{background:rgba(63,185,80,.15)!important;border-color:var(--green)!important;color:var(--green)!important;}
+#file-menu{
+  position:fixed;z-index:9999;
+  background:#161b22;border:1px solid #30363d;border-radius:6px;
+  padding:4px 0;min-width:140px;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
+  display:none;user-select:none;
+}
+#file-menu.visible{display:block;}
+.fmenu-item{
+  padding:7px 14px;font-size:12.6px;
+  color:var(--text);cursor:pointer;
+  transition:background .12s,color .12s;
+}
+.fmenu-item:hover{background:#3fb950;color:#000;}
+.fmenu-item.fmenu-disabled{color:var(--dim);cursor:default;pointer-events:none;}
+.fmenu-item.fmenu-disabled:hover{background:transparent;color:var(--dim);}
+.file-row.selected{
+  background:rgba(63,185,80,.13);
+  border-left-color:var(--green);
+  outline:1px dashed rgba(63,185,80,.45);
+  outline-offset:-1px;
+}
 
 </style>
 </head>
@@ -1277,6 +1309,10 @@ button.rippling::before { opacity: 1; transform: scale(2.5); transition: none; }
 <div id="bg-base"></div>
 
 <div id="sidebar-backdrop"></div>
+<div id="file-menu">
+  <div id="fmenu-copy"  class="fmenu-item">📋 Copy</div>
+  <div id="fmenu-paste" class="fmenu-item">📌 Paste</div>
+</div>
 <div id="header">
 <button id="mob-sidebar-toggle" aria-label="Toggle sidebar">☰</button>
 <div id="logo">Jhun's <span>Pack Editor</span></div>
