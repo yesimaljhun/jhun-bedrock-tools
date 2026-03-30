@@ -4669,8 +4669,8 @@ function skInit3D() {
 
   SK_SCENE  = new THREE.Scene();
   SK_CAMERA = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-  SK_CAMERA.position.set(0, 16, 60);
-  SK_CAMERA.lookAt(0, 16, 0);
+  SK_CAMERA.position.set(0, 0, 60);
+  SK_CAMERA.lookAt(0, 0, 0);
 
   SK_SCENE.add(new THREE.AmbientLight(0xffffff, 0.8));
   const dir = new THREE.DirectionalLight(0xffffff, 0.6);
@@ -4693,6 +4693,9 @@ function skInit3D() {
     SK_RAF = requestAnimationFrame(loop);
     SK_MODEL.rotation.x = SK_ROT_X;
     SK_MODEL.rotation.y = SK_ROT_Y;
+    SK_CAMERA.position.x *= 0.85;
+    SK_CAMERA.position.y *= 0.85;
+    SK_CAMERA.lookAt(0, 0, 0);
     if (SK_TEX) SK_TEX.needsUpdate = true;
     SK_RENDERER.render(SK_SCENE, SK_CAMERA);
   })();
@@ -4761,8 +4764,8 @@ function skInit3D() {
   cv.addEventListener('mousemove', e => {
     if (paint3d && painting) doPaint(e);
     else if (!paint3d && SK_DRAG) {
-      SK_ROT_Y += (e.clientX - SK_LASTX) * 0.01;
-      SK_ROT_X += (e.clientY - SK_LASTY) * 0.01;
+      SK_ROT_Y += (e.clientX - SK_LASTX) * 0.005;
+      SK_ROT_X += (e.clientY - SK_LASTY) * 0.005;
       SK_ROT_X = Math.max(-Math.PI/2, Math.min(Math.PI/2, SK_ROT_X));
       SK_LASTX = e.clientX; SK_LASTY = e.clientY;
     }
@@ -4781,8 +4784,8 @@ function skInit3D() {
   cv.addEventListener('touchmove', e => {
     if (paint3d && painting) doPaint(e);
     else if (!paint3d && SK_DRAG) {
-      SK_ROT_Y += (e.touches[0].clientX - SK_LASTX) * 0.012;
-      SK_ROT_X += (e.touches[0].clientY - SK_LASTY) * 0.012;
+      SK_ROT_Y += (e.touches[0].clientX - SK_LASTX) * 0.006;
+      SK_ROT_X += (e.touches[0].clientY - SK_LASTY) * 0.006;
       SK_ROT_X = Math.max(-Math.PI/2, Math.min(Math.PI/2, SK_ROT_X));
       SK_LASTX = e.touches[0].clientX; SK_LASTY = e.touches[0].clientY;
     }
@@ -4795,15 +4798,12 @@ function skInit3D() {
 
   cv.addEventListener('wheel', e => {
     e.preventDefault();
-    const delta = e.deltaY * 0.1;
-    const newZ = Math.max(20, Math.min(120, SK_CAMERA.position.z + delta));
-    // Zoom toward the point under the cursor, not just straight in/out
     const ndc = getNDC(e);
     const vec = new THREE.Vector3(ndc.x, ndc.y, 0.5).unproject(SK_CAMERA);
     vec.sub(SK_CAMERA.position).normalize();
+    const newZ = Math.max(20, Math.min(120, SK_CAMERA.position.z + e.deltaY * 0.02));
     const moveDist = SK_CAMERA.position.z - newZ;
     SK_CAMERA.position.addScaledVector(vec, moveDist);
-    // Clamp Z so model stays in view
     SK_CAMERA.position.z = Math.max(20, Math.min(120, SK_CAMERA.position.z));
   }, { passive: false, signal: sig });
 
