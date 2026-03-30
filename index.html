@@ -574,9 +574,9 @@ text-align:center;
 #tmpl-search:focus{border-color:var(--blue)}
 #tmpl-close-btn{background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);font-size:16.1px;padding:3px 8px;cursor:pointer;transition:all .15s}
 #tmpl-close-btn:hover{color:var(--text);border-color:var(--border2)}
-#tmpl-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;padding:0 6px}
-.tmpl-tab{padding:8px 14px;font-family:var(--pixel);font-size:13.8px;color:var(--dim);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
-.tmpl-tab.on{color:var(--green);border-bottom-color:var(--green)}
+#tmpl-tabs{display:flex;flex-direction:column;border-right:1px solid var(--border);flex-shrink:0;padding:6px 0}
+.tmpl-tab{padding:8px 14px;font-family:var(--pixel);font-size:13.8px;color:var(--dim);background:none;border:none;cursor:pointer;border-right:2px solid transparent;margin-right:-1px;text-align:left;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all .15s}
+.tmpl-tab.on{color:var(--green);border-right-color:var(--green)}
 .tmpl-tab:hover:not(.on){color:var(--muted)}
 #tmpl-grid-wrap{flex:1;overflow-y:auto;padding:14px}
 #tmpl-grid-wrap::-webkit-scrollbar{width:6px}
@@ -1301,10 +1301,16 @@ button.rippling::before { opacity: 1; transform: scale(2.5); transition: none; }
   outline:1px dashed rgba(63,185,80,.45);
   outline-offset:-1px;
 }
+.btn-svg-icon{width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;flex-shrink:0;display:inline-block}
 
 </style>
 </head>
 <body>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="icon-folder" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M0 1H5L8 3H13V5H3.7457L2.03141 11H4.11144L5.2543 7H16L14 14H0V1Z"/>
+  </symbol>
+</svg>
 <div id="bg-layer" class="hidden"></div>
 <div id="bg-base"></div>
 
@@ -1319,7 +1325,7 @@ button.rippling::before { opacity: 1; transform: scale(2.5); transition: none; }
 <div id="pack-tabs"><span class="pack-tab active"><span class="tab-name">No pack loaded</span></span><button id="btn-add-tab" title="Open another pack">+</button></div>
 <button class="btn-s" id="btn-misc" style="font-size:11.5px;padding:5px 11px">☰ Other Tools</button>
 <div class="spacer"></div>
-<button class="btn-s" id="btn-load">📂 Load Pack</button>
+<button class="btn-s" id="btn-load"><svg class="btn-svg-icon" aria-hidden="true" focusable="false"><use href="#icon-folder"/></svg> Load Pack</button>
 <div id="export-wrap">
 <button class="btn-p" id="btn-export" disabled>💾 Export</button>
 <button class="btn-p" id="btn-export-arrow" disabled title="Choose export format">▾</button>
@@ -1892,7 +1898,7 @@ placeholder="e.g. Pack Editor">
 <div class="sbc-result-actions">
 <button class="btn-p" id="sbc-download-btn">⬇ Download .mcpack</button>
 <button class="btn-s" id="sbc-download-zip-btn">🗜 Download .zip (PNGs only)</button>
-<button class="btn-s" id="sbc-load-btn">📂 Open in Editor</button>
+<button class="btn-s" id="sbc-load-btn"><svg class="btn-svg-icon" aria-hidden="true" focusable="false"><use href="#icon-folder"/></svg> Open in Editor</button>
 <button class="btn-s" id="sbc-retry-btn">↺ Convert Another</button>
 </div>
 </div>
@@ -1944,7 +1950,7 @@ placeholder="e.g. Pack Editor">
         <button id="skin-type-steve" style="font-size:11.5px;padding:4px 10px;border-radius:3px;border:none;cursor:pointer;font-family:var(--mono);font-weight:600;background:var(--green);color:#fff;transition:all .15s;display:flex;align-items:center;gap:5px"><img src="icons/steve.png" style="width:16px;height:16px;image-rendering:pixelated;border-radius:2px">Steve</button>
         <button id="skin-type-alex" style="font-size:11.5px;padding:4px 10px;border-radius:3px;border:none;cursor:pointer;font-family:var(--mono);font-weight:600;background:transparent;color:var(--muted);transition:all .15s;display:flex;align-items:center;gap:5px"><img src="icons/alex.png" style="width:16px;height:16px;image-rendering:pixelated;border-radius:2px">Alex</button>
       </div>
-      <button class="btn-s" id="skin-load-new" style="font-size:11.5px;padding:5px 10px">📂 Load Skin</button>
+      <button class="btn-s" id="skin-load-new" style="font-size:11.5px;padding:5px 10px"><svg class="btn-svg-icon" aria-hidden="true" focusable="false"><use href="#icon-folder"/></svg> Load Skin</button>
       <button class="btn-p" id="skin-download" style="font-size:11.5px;padding:5px 10px" disabled>⬇ Download Skin</button>
     </div>
   </div>
@@ -2061,13 +2067,13 @@ placeholder="e.g. Pack Editor">
 <input id="tmpl-search" type="text" placeholder="Search textures…">
 <button id="tmpl-close-btn">✕</button>
 </div>
-<div id="tmpl-tabs">
-<button class="tmpl-tab on" data-cat="blocks"><img src="icons/blocks.png" style="width:1em;height:1em;image-rendering:pixelated;vertical-align:middle"> Blocks</button>
-<button class="tmpl-tab" data-cat="items"><img src="icons/items.png" style="width:1em;height:1em;image-rendering:pixelated;vertical-align:middle"> Items</button>
-<button class="tmpl-tab" data-cat="all">📁 All</button>
-<button class="tmpl-tab" data-cat="sword-templates" style="margin-left:auto">Sword Templates</button>
-</div>
 <div id="tmpl-body">
+<div id="tmpl-tabs">
+<button class="tmpl-tab on" data-cat="all"><img src="icons/all.png" style="width:1.5em;height:1.5em;image-rendering:pixelated;vertical-align:middle"> All</button>
+<button class="tmpl-tab" data-cat="blocks"><img src="icons/blocks.png" style="width:1.5em;height:1.5em;image-rendering:pixelated;vertical-align:middle"> Blocks</button>
+<button class="tmpl-tab" data-cat="items"><img src="icons/items.png" style="width:1.5em;height:1.5em;image-rendering:pixelated;vertical-align:middle"> Items</button>
+<button class="tmpl-tab" data-cat="sword-templates"><img src="icons/sword.png" style="width:1.5em;height:1.5em;image-rendering:pixelated;vertical-align:middle"> Sword Templates</button>
+</div>
 <div id="tmpl-grid-wrap">
 <div id="tmpl-loading">⏳ Loading templates…</div>
 <div id="tmpl-grid" style="display:none"></div>
