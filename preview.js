@@ -27,25 +27,27 @@
   /* Draw an already-decoded <img> element onto the preview canvas.
      Works even when the blob URL has been revoked — canvas drawImage
      reads from the browser's decoded pixel buffer, not the URL. */
-  function drawThumb(thumb) {
+  function drawThumb(thumb, targetSize) {
     var nw = thumb.naturalWidth  || thumb.width;
     var nh = thumb.naturalHeight || thumb.height;
     if (!nw || !nh) return false;
     srcW = nw; srcH = nh;
-    pvwCvs.width  = nw;
-    pvwCvs.height = nh;
+    var cw = targetSize || nw;
+    var ch = targetSize || nh;
+    pvwCvs.width  = cw;
+    pvwCvs.height = ch;
     var ctx = pvwCvs.getContext('2d');
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(thumb, 0, 0);
+    ctx.drawImage(thumb, 0, 0, cw, ch);
     return true;
   }
 
-  function showPreview(thumb) {
+  function showPreview(thumb, targetSize, defaultZoom) {
     function tryDraw() {
-      if (!drawThumb(thumb)) return;
+      if (!drawThumb(thumb, targetSize)) return;
       pvwEmpty.style.display = 'none';
       pvwCvs.style.display   = 'block';
-      fitZoom();
+      if (defaultZoom != null) { zoom = defaultZoom; applyZoom(); } else { fitZoom(); }
     }
     if (thumb.complete && thumb.naturalWidth > 0) {
       tryDraw();
@@ -70,7 +72,7 @@
     var cell = e.target.closest('.tmpl-cell');
     if (!cell) return;
     var thumb = cell.querySelector('img.tmpl-thumb');
-    if (thumb) showPreview(thumb);
+    if (thumb) showPreview(thumb, cell.dataset.sword === '1' ? 128 : null, cell.dataset.sword === '1' ? 1 : null);
   });
 
   /* clear preview when modal closes or tab switches */
